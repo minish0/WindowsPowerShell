@@ -1,0 +1,1 @@
+This Folder Contains Windows Firewall Scripts for Cassandra,Spark,kafka,Zookeeper.

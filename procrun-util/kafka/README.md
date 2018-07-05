@@ -1,0 +1,1 @@
+Install kafka as Windows Service, add kafka JVM Options to enable remote JMX or Java Flight Recorder feature.

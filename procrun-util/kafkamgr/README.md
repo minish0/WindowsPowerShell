@@ -1,0 +1,1 @@
+Install kafka-manager as Windows Service.
