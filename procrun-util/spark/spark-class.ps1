@@ -18,8 +18,16 @@ Copy-Item .\spark-class.ps1 .\spark-worker.ps1 ; .\spark-worker.ps1
 #>
 Param (
     [parameter(Position=0)][String]$deployClass = $MyInvocation.MyCommand.Definition,
-    [parameter][String]$masterURL
+    [parameter(Position=1)][String]$masterURL,
+    [parameter(Position=2)][String]$scalaVer = "2.11"
 )
+
+$env:SPARK_SCALA_VERSION = "$scalaVer"
+$env:SPARK_CONF_DIR = Join-Path -Path "$env:SPARK_HOME" -ChildPath "conf"
+$sparkEnv = Join-Path -Path "$env:SPARK_HOME" -ChildPath "conf\spark-env.ps1"
+if (Test-Path "$sparkEnv") {
+    & $sparkEnv
+}
 
 $classPrefix = "org.apache.spark.deploy."
 
