@@ -36,7 +36,7 @@ Param (
 
 #[Initialisations]
 
-#Set Error Action to Silently Continue
+#Set Error Action: Stop,Inquire,Continue,Suspend,SilentlyContinue
 $ErrorActionPreference = 'SilentlyContinue'
 
 #Import Modules & Snap-ins
