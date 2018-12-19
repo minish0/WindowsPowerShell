@@ -1,6 +1,7 @@
 # Script Requirements(Delete -RunAsAdministrator if unnecessary)
 #Requires -Version 4
 #Requires -RunAsAdministrator
+#Requires -Modules PSLogging
 
 <#
 .SYNOPSIS
