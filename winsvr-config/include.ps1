@@ -123,7 +123,7 @@ Function AddSystemPaths {
         Try {
             ForEach ($Directory in $Directories) {
                 $PathFound = $False
-                $SystemPath -Split ';' | ForEach-Object { $PathFound = $_ -eq $Directory }
+                $SystemPath -Split ';' | ForEach-Object { $PathFound = ($_ -eq "$Directory" -or $_ -eq "$Directory\") }
                 if (!$PathFound) {
                     if ($SystemPath -match ';$') {
                         $NewPath = $SystemPath + "$Directory"
@@ -232,7 +232,7 @@ Function AddUserPaths {
         Try {
             ForEach ($Directory in $Directories) {
                 $PathFound = $False
-                $UserPath -Split ';' | ForEach-Object { if (!$PathFound) { $PathFound = $_ -eq $Directory } }
+                $UserPath -Split ';' | ForEach-Object { if (!$PathFound) { $PathFound = ($_ -eq "$Directory" -or $_ -eq "$Directory\" )} }
                 if (!$PathFound) {
                     if ($UserPath -match ';$') {
                         $NewPath = $UserPath + "$Directory"
