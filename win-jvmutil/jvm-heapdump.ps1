@@ -91,7 +91,7 @@ if ($PSVersionTable.PSVersion.Major -eq '4') {
     $javaHome = Get-ItemPropertyValue -Path 'HKLM:\SOFTWARE\JavaSoft\Java Development Kit\1.8' -Name JavaHome
 }
 $jcmd = Join-Path -Path "$javaHome" -ChildPath 'bin\jcmd.exe'
-$jhdPrefix = "heapdump_WildFly-$env:COMPUTERNAME"
+$jhdPrefix = "heapdump_$Name-$env:COMPUTERNAME"
 $jhdList = Get-ChildItem "${Dir}\${jhdPrefix}*"
 $jhdIndex = $jhdList.count + 1
 $jhdName = "${Dir}\${jhdPrefix}_${jhdIndex}.hprof"
