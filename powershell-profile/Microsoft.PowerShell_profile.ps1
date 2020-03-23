@@ -45,10 +45,10 @@ function Set-WindowTitle {
 	$Host.UI.RawUI.set_WindowTitle($env:USERNAME.ToLower() + '@' + $env:COMPUTERNAME.ToLower() + ' : ' + $(Get-Location))
 }
 ##
-## Change-Directory-Function
+## Push-DirStack is the function with a little modification for pushd on Unix/Linux.
 ## function for 'cd'
 ##
-function Change-Directory-Function {
+function Push-DirStack {
 	Param(
 		[Parameter(Mandatory=$False,Position=1)]
 		[string] $Destination = $env:USERPROFILE,
@@ -68,10 +68,11 @@ function Change-Directory-Function {
 	}
 }
 ##
-## function for back location
+## Pop-DirStack is the function for popd in Unix/Linux.
 ##
-function Back-Directory-Function {
+function Pop-DirStack {
 	Param(
+		[Parameter(Mandatory=$False,Position=1)]
 		[string] $StackName
 	)
 	if ($StackName) {
@@ -105,11 +106,12 @@ function prompt {
 	}
 }
 ##
-## Dirs-Function
+## Get-DirStack is the fuction for dirs on Unix/Linux.
 ##
-function Dirs-Function {
+function Get-DirStack {
   Param(
-	[string] $StackName
+		[Parameter(Mandatory=$False,Position=1)]
+		[string] $StackName
   )
   if ($StackName) {
 	Get-Location -Stack -StackName $StackName
@@ -120,7 +122,7 @@ function Dirs-Function {
 ##
 ## ExportHistory
 ##
-function ExportHistory {
+function Export-History {
 	Get-History -Count $SaveHistoryCount | Export-Clixml -Path $HistoryXml
 }
 ###
@@ -130,9 +132,9 @@ function ExportHistory {
 # Remove original 'cd' alias, and set new one
 #
 Remove-Item alias:\cd
-Set-Alias -Name cd -Value Change-Directory-Function
-Set-Alias -Name dirs -Value Dirs-Function
-Set-Alias -Name back -Value Back-Directory-Function
+Set-Alias -Name cd -Value Push-DirStack
+Set-Alias -Name dirs -Value Get-DirStack
+Set-Alias -Name back -Value Pop-DirStack
 # PowerTab: Tab expansion module
 # http://powertab.codeplex.com/
 <############### Start of PowerTab Initialization Code ########################
@@ -143,7 +145,7 @@ Set-Alias -Name back -Value Back-Directory-Function
 # Import-TabExpansionTheme "Blue"
 ################ End of PowerTab Initialization Code ##########################
 $DocumentsPath = $(Join-Path $env:USERPROFILE -ChildPath Documents)
-Register-EngineEvent PowerShell.Exiting -Action { ExportHistory }
+Register-EngineEvent PowerShell.Exiting -Action { Export-History }
 cd $DocumentsPath
 If ($(Test-Path $HistoryXml)) {
 	Import-Clixml -Path $HistoryXml | Add-History
