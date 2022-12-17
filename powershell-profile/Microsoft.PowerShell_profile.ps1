@@ -42,7 +42,13 @@ function Get-Current-History-Id {
 ## display current user and directory PowerShell window title
 ##
 function Set-WindowTitle {
-	$Host.UI.RawUI.set_WindowTitle($env:USERNAME.ToLower() + '@' + $env:COMPUTERNAME.ToLower() + ' : ' + $(Get-Location))
+	if ($PSVersionTable.Platform -eq 'Unix') {
+		$windowTitleStr = $env:USER.ToLower() + '@' + $(uname -n) + ' : ' + $(Get-Location)
+		$Host.UI.RawUI.WindowTitle = $windowTitleStr
+	} else {
+		$windowTitleStr = $env:USERNAME.ToLower() + '@' + $env:COMPUTERNAME.ToLower() + ' : ' + $(Get-Location)
+		$Host.UI.RawUI.set_WindowTitle($windowTitleStr)
+	}
 }
 ##
 ## Push-DirStack is the function with a little modification for pushd on Unix/Linux.
@@ -98,7 +104,11 @@ function prompt {
 		# '[ ' + $env:username.ToLower() + '@' + $env:computername.ToLower() + ' : ' +
 		# $(Get-Location) + ' ]% '
 		$CurrentHistoryId = $(Get-Current-History-Id)
-		$env:computername.ToLower() + '[' + $CurrentHistoryId + ']% '
+		if ($PSVersionTable.Platform -eq 'Unix') {
+			$(uname -n) + '[' + $CurrentHistoryId + ']% '
+		} else {
+			$env:computername.ToLower() + '[' + $CurrentHistoryId + ']% '
+		}
 	} else {
 		# following line is PS2 variable definition in UNIX sh
 		'> ' * ($nestedpPomptLevel + 1)
@@ -144,9 +154,15 @@ Set-Alias -Name back -Value Pop-DirStack
 # Import-Module "PowerTab" -ArgumentList $PowerTabConfig
 # Import-TabExpansionTheme "Blue"
 ################ End of PowerTab Initialization Code ##########################
-$DocumentsPath = $(Join-Path $env:USERPROFILE -ChildPath Documents)
+if ("$env:USERPROFILE") {
+	$DocumentsPath = $(Join-Path $env:USERPROFILE -ChildPath Documents)
+} elseif ("$env:HOME") {
+	$DocumentsPath = "$env:HOME"
+}
+if ("$DocumentsPath") {
+	Push-DirStack $DocumentsPath
+}
 Register-EngineEvent PowerShell.Exiting -Action { Export-History }
-cd $DocumentsPath
 If ($(Test-Path $HistoryXml)) {
 	Import-Clixml -Path $HistoryXml | Add-History
 }
