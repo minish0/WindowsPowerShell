@@ -11,7 +11,7 @@ New-Variable -Name PSProfileRev -Value '$Revision$' -Scope 'global' -description
 ##
 ## CurrentHistoryId: current history number
 ##
-New-Variable -Name CurrrentHistoryId -Scope 'global' -description 'Current History Number'
+New-Variable -Name CurrentHistoryId -Scope 'global' -description 'Current History Number'
 ##
 ## PowerTabConfig: PowerTab Configration
 ##
